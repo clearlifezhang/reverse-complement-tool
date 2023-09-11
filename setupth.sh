@@ -26,7 +26,6 @@ cd /home/$OPUSER
 ## scp local git repo to ec2; running the following command in local machine
 # scp -i "your-key-pair.pem" ~/reverse-complement-tool ubuntu@ec2-34-229-252-123.compute-1.amazonaws.com:/home/$OPUSER/
 
-mv reverse-complement-tool reverse-complement-tool
 cd $PROJ_DIR
 
 # 3. Setup Python
