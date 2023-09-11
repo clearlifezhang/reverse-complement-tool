@@ -1,0 +1,76 @@
+<!doctype html>
+<!-- Reverse Complment tool to work with flask App -->
+{% set headerstyle = "font-family: 'Source Sans Pro', sans-serif;" %}
+{% set divstyle = "font-family: 'Source Sans Pro', sans-serif;" %}
+{% set textboxstyle = "height: 38px;font-size:15px;font-family: Consolas,Menlo,'courier new',monospace;margin:10px" %}
+{% set butstyle = "color:#ffffff;background-color:#04AA6D;border-radius:5px;font-size:17px;height: 37px;font-family: 'Source Sans Pro', sans-serif;" %}
+{% set prestyle = "font-size:18px;margin:10px" %}
+<title>Reverse Complement Tool</title>
+<h1 style="{{headerstyle}}">Reverse Complement Tool</h1>
+<body>
+<div style="{{divstyle}}">Enter the sequence to reverse complement</div>
+<input type="text" id="sequence_str_id"  placeholder="ACGT" style="{{textboxstyle}}"><br>
+<button onclick="submitdata()" style="{{butstyle}}">Click me</button>
+
+
+<button id="downloadButton" onclick="downloadResult()" disabled>Download Result</button>
+
+
+<pre id="rcomp_pre" style="{{prestyle}}"></pre>
+</body>
+
+<script>
+
+  // Variable to store the result sequence or warning
+  let resultSequence = '';
+
+  // Function to download the result as a text file
+  function downloadResult() {
+    const blob = new Blob([resultSequence], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = 'reverse_complement.txt';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+
+
+  function submitdata() {
+    var seq_str_obj = document.getElementById("sequence_str_id");
+    var seq_str = seq_str_obj.value
+    console.log(seq_str.value);
+    var rc_url = `/rcomp/${seq_str}`
+
+    const downloadButton = document.getElementById("downloadButton");
+
+    fetch(
+        rc_url,
+        {method: "GET"}// default, so we can ignore
+    ).then(
+      (response) => response.json()
+      // (response) => console.log(response)
+    ).then(
+      (seq_map) => {
+        resultSequence = seq_map['sequence'];
+        console.log(resultSequence);
+        return resultSequence;
+      }
+    ).then(
+      (seq_str) => {
+        var rcomp_pre_el = document.getElementById("rcomp_pre");
+        if (seq_str.startsWith("Warning:")) {
+          rcomp_pre_el.style.color = "red";
+          downloadButton.disabled = true; //Disable teh download button
+        } else {
+          rcomp_pre_el.style.color = "black";
+          downloadButton.disabled = false;
+        }
+        rcomp_pre_el.innerHTML = seq_str;
+    });
+  }
+
+  </script>
+

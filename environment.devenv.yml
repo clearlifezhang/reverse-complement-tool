@@ -1,0 +1,8 @@
+# conda-devenv environment file
+name: takehome
+
+dependencies:
+  - flask
+  - gunicorn
+  - ipython
+  - jinja2
